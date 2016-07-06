@@ -1,0 +1,726 @@
+﻿<Window x:Class="ACA2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:ACA2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="786.834" Width="911.955" Closing="Window_Closing">
+
+    <Grid>
+        <TabControl x:Name="mainControl" Margin="2,71,0,0" BorderThickness="0" Background="White" >
+            <TabItem Name="Hometb" Header="Home" FontSize="14.667">
+                <Grid Margin="0,4,0,0" >
+                    <Label x:Name="label" Content="Employer Name:" HorizontalAlignment="Left" Margin="62,89,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label1" Content="Filing Year:" HorizontalAlignment="Left" Margin="62,133,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label2" Content="Last Upload Date:" HorizontalAlignment="Left" Margin="62,176,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label3" Content="Last Modified:" HorizontalAlignment="Left" Margin="62,219,0,0" VerticalAlignment="Top"/>
+                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="62,307,0,0" VerticalAlignment="Top" Height="137" Width="742"/>
+                    <Label x:Name="employerNameLabel" Content="Label" HorizontalAlignment="Left" Margin="282,89,0,0" VerticalAlignment="Top" Width="213"/>
+                    <Label x:Name="filingYearLabel" Content="Label" HorizontalAlignment="Left" Margin="282,133,0,0" VerticalAlignment="Top" Width="213"/>
+                    <Label x:Name="lastUploadDateLabel" Content="Label" HorizontalAlignment="Left" Margin="282,176,0,0" VerticalAlignment="Top" Width="213"/>
+                    <Label x:Name="lastModifiedLabel" Content="Label" HorizontalAlignment="Left" Margin="282,219,0,0" VerticalAlignment="Top" Width="213"/>
+                </Grid>
+            </TabItem>
+            <TabItem Name="Uploadtb" Header="Upload" FontSize="14.667">
+                <Grid>
+                    <Grid.Background>
+                        <ImageBrush/>
+                    </Grid.Background>
+                    <GroupBox x:Name="groupBox" Header="Source File Type" Margin="10,10,10,0" VerticalAlignment="Top" Height="163"/>
+                    <RadioButton x:Name="Dt95C" Content="1095-C Datasheet" HorizontalAlignment="Left" Margin="51,47,0,0" VerticalAlignment="Top"/>
+                    <RadioButton x:Name="Dt95B" Content="1095-B Datasheet" HorizontalAlignment="Left" Margin="51,68,0,0" VerticalAlignment="Top" />
+                    <RadioButton x:Name="ERinfo" Content="Employer Information" HorizontalAlignment="Left" Margin="51,89,0,0" VerticalAlignment="Top"/>
+                    <RadioButton x:Name="EEinfo" Content="Employee Information" HorizontalAlignment="Left" Margin="51,110,0,0" VerticalAlignment="Top"/>
+                    <RadioButton x:Name="DPinfo" Content="Dependent Informaiton" HorizontalAlignment="Left" Margin="51,131,0,0" VerticalAlignment="Top"/>
+                    <Button x:Name="map" Content="Map Fields" Margin="0,131,51,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75"/>
+                    <TextBox x:Name="skipNum" HorizontalAlignment="Left" Height="23" Margin="305,205,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
+                    <Label x:Name="label8" Content="Number of heading rows to skip?" HorizontalAlignment="Left" Margin="51,203,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+                    <CheckBox x:Name="updOnly" Content="Update data only (match by SSN)" HorizontalAlignment="Left" Margin="51,266,0,0" VerticalAlignment="Top"/>
+                    <CheckBox x:Name="dltAll" Content="Delete all existing data and upload" HorizontalAlignment="Left" Margin="51,289,0,0" VerticalAlignment="Top"/>
+                    <Button x:Name="upload" Content="Upload" Margin="0,0,51,36" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Selecttb" Header="Select" FontSize="14.667">
+                <Grid>
+                    <Grid.Background>
+                        <ImageBrush/>
+                    </Grid.Background>
+                    <Label x:Name="label9" Content="Employer" HorizontalAlignment="Left" Margin="36,35,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="Filter" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" Height="25" Margin="137,37,26,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <DataGrid x:Name="companiesDataGrid"  Margin="34,87,28,27" ItemsSource="{Binding ItemsView}" IsReadOnly="True" AutoGenerateColumns="False" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" HorizontalGridLinesBrush="White" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Black" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" GridLinesVisibility="None" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="True" Padding="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding id}" Visibility="Hidden"/>
+                            <DataGridTextColumn Header="Tax ID" Binding="{Binding taxid}"/>
+                            <DataGridTextColumn Header="Employer Name" Width="*" Binding="{Binding name}"/>
+                            <DataGridTextColumn Header="Total Employees" Binding="{Binding totalNumberEE}"/>
+                            <DataGridTextColumn Header="Last Modified" Binding="{Binding lastEdit}"/>
+                        </DataGrid.Columns>
+
+                        <DataGrid.Resources>
+                            <Style TargetType="{x:Type DataGridRow}">
+                                <EventSetter Event="Control.MouseDoubleClick" Handler="companiesDataGrid_Row_DoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Plantb" Header="Plan" FontSize="14.667">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="189*" MaxWidth="500"/>
+                        <ColumnDefinition Width="254*" MaxWidth="920"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.Background>
+                        <ImageBrush/>
+                    </Grid.Background>
+                    <DataGrid x:Name="planDataGrid" Margin="10,12,11,31" AutoGenerateColumns="False" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" HorizontalGridLinesBrush="White" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Black" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" GridLinesVisibility="None" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="True" Padding="0" IsReadOnly="True" Background="White" FontSize="14.667">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding id}"  Header="Id" Visibility="Hidden" />
+                            <DataGridTextColumn Binding="{Binding name}"   Width ="*" Header="Plan Name"/>
+                        </DataGrid.Columns>
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseUp" Handler="planDataGrid_Row_Selected"/>
+                                <EventSetter Event="KeyUp" Handler="planDataGrid_Row_Selected"/>
+                            </Style>
+                        </DataGrid.Resources>
+                    </DataGrid>
+                    <Grid x:Name="EditBarLayout" Height="22" VerticalAlignment="Bottom" Margin="10,0,11,10">
+                        <Grid.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                                <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                                <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                            </LinearGradientBrush>
+                        </Grid.Background>
+                        <Rectangle Height="22" Stroke="#FF707070" VerticalAlignment="Top"/>
+                        <Button x:Name="AddPlan" HorizontalAlignment="Left" Height="22" Width="34" VerticalAlignment="Top"  RenderTransformOrigin="0.5,0.5" Focusable="False" Background="{x:Null}" Click="AddPlan_Click">
+                            <Image Source="Resources/Plus.png" Stretch="Uniform" DockPanel.Dock="Top" Width="14" Height="12" RenderTransformOrigin="0.929,0.5"/>
+                        </Button>
+                        <Button x:Name="DeletePlan" HorizontalAlignment="Left" Height="22" Width="34" VerticalAlignment="Top"  RenderTransformOrigin="0.5,0.5" Focusable="False" Margin="33,0,0,0" Background="{x:Null}" Click="DeletePlan_Click">
+                            <Image Source="Resources/Minus.png" Stretch="Uniform" DockPanel.Dock="Top" Width="14" Height="12" RenderTransformOrigin="0.929,0.5"/>
+                        </Button>
+                    </Grid>
+                    <Grid Name="PlanInfoGrid" Margin="0,12,0,56" Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="195*" MaxHeight="503"/>
+                            <RowDefinition Height="97*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="284*" MaxWidth="500"/>
+                            <ColumnDefinition Width="109"/>
+                            <ColumnDefinition Width="115*" MaxWidth="300"/>
+                        </Grid.ColumnDefinitions>
+                        <GroupBox x:Name="groupBox1" Header="General Information" Margin="0,10,3,0" VerticalAlignment="Top" Height="282" FontSize="14.667" Grid.ColumnSpan="3"/>
+                        <Label x:Name="planNamelbl" Content="Plan Name:" HorizontalAlignment="Left" Margin="30,39,0,0" VerticalAlignment="Top" Height="30" Width="102" FontSize="14.667"/>
+                        <Label x:Name="fundingTypelbl" Content="Funding Type:" HorizontalAlignment="Left" Margin="30,74,0,0" VerticalAlignment="Top" Height="30" Width="102" FontSize="14.667"/>
+                        <Label x:Name="planTypelbl" Content="Plan Type:" Grid.Column="1" HorizontalAlignment="Left" Margin="13,76,0,0" VerticalAlignment="Top" Height="30" Width="85" FontSize="14.667"/>
+                        <Label x:Name="waitingPeriodlbl" Content="Waiting Period:" HorizontalAlignment="Left" Margin="30,111,0,0" VerticalAlignment="Top" Height="30" Width="136" FontSize="14.667"/>
+                        <Label x:Name="waitingDayslbl" Content="Days" Grid.Column="2" Margin="0,114,20,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="42" Height="30" FontSize="14.667"/>
+                        <Label x:Name="offeredSpouselbl" Content="Offered to Spouse?" HorizontalAlignment="Left" Margin="30,148,0,0" VerticalAlignment="Top" Height="30" Width="143" FontSize="14.667"/>
+                        <Label x:Name="offeredDependentslbl" Content="Offered to Dependents?" HorizontalAlignment="Left" Margin="30,183,0,0" VerticalAlignment="Top" Height="30" Width="166" FontSize="14.667"/>
+                        <Label x:Name="termTerminationlbl" Content="Terminates on Date of Termination?" HorizontalAlignment="Left" Margin="30,218,0,0" VerticalAlignment="Top" Width="246" FontSize="14.667" Height="30"/>
+                        <Label x:Name="renewalMonthlbl" Content="Plan Renewal Month" HorizontalAlignment="Left" Margin="30,253,0,0" VerticalAlignment="Top" FontSize="14.667" Height="30" Width="143"/>
+                        <Label x:Name="minimumValuelbl" Content="Minimum Value" Grid.Column="1" HorizontalAlignment="Left" Margin="13,247,0,0" VerticalAlignment="Top" FontSize="14.667" Width="121" Height="30" Grid.ColumnSpan="2"/>
+                        <Label x:Name="bandingTypelbl" Content="Banding Type:" HorizontalAlignment="Left" Margin="30,8,0,0" VerticalAlignment="Top" FontSize="14.667" Height="30" Grid.Row="1" Width="102"/>
+                        <TextBox x:Name="planName" Height="27" Margin="171,39,22,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14.667" Grid.ColumnSpan="3" />
+                        <ComboBox x:Name="fundType" Margin="171,79,0,0" VerticalAlignment="Top" Height="26" ItemsSource="{Binding}" FontSize="14.667"/>
+                        <ComboBox x:Name="planType" Grid.Column="1" Margin="98,78,10,0" VerticalAlignment="Top" Height="26" ItemsSource="{Binding}" FontSize="14.667" Grid.ColumnSpan="2"/>
+                        <ComboBox x:Name="waitingPeriod" Margin="171,114,0,0" VerticalAlignment="Top" Height="26" ItemsSource="{Binding}" FontSize="14.667"/>
+                        <TextBox x:Name="waitingDays" Grid.Column="1" Height="27" Margin="13,114,67,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14.667" Grid.ColumnSpan="2"/>
+                        <ComboBox x:Name="offeredSpouse" Margin="171,151,0,0" VerticalAlignment="Top" Height="26" ItemsSource="{Binding}" FontSize="14.667"/>
+                        <ComboBox x:Name="offeredDependent" Margin="201,187,0,0" VerticalAlignment="Top" Height="26" ItemsSource="{Binding}" FontSize="14.667"/>
+                        <ComboBox x:Name="termTermination" Margin="281,218,29,0" VerticalAlignment="Top" Height="25" ItemsSource="{Binding}" FontSize="14.667" Grid.ColumnSpan="2"/>
+                        <ComboBox x:Name="renewalMonth" Margin="175,251,0,0" VerticalAlignment="Top" Height="25" ItemsSource="{Binding}" FontSize="14.667"/>
+                        <ComboBox x:Name="minimumValue" Grid.Column="2" Margin="21,247,10,0" VerticalAlignment="Top" Height="26" ItemsSource="{Binding}" FontSize="14.667"/>
+                        <DataGrid x:Name="codesDataGrid" Margin="4,297,-1,7" AutoGenerateColumns="False" ColumnWidth="*" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False" DataGridCell.Selected="DataGrid_GotFocus" CanUserSortColumns="False" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" FontSize="14.667" Grid.ColumnSpan="3" SelectionUnit="Cell">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Binding="{Binding codeCheck1, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
+                                <DataGridTextColumn Binding="{Binding codeName1, IsAsync=True}" IsReadOnly="True"/>
+                                <DataGridCheckBoxColumn Binding="{Binding codeCheck2, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
+                                <DataGridTextColumn Binding="{Binding codeName2, IsAsync=True}" IsReadOnly="True"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <ComboBox x:Name="bandingType" Margin="137,10,0,0" VerticalAlignment="Top" Height="25" ItemsSource="{Binding}" FontSize="14.667" Grid.Row="1"/>
+                        <DataGrid x:Name="bandingValues" Margin="3,43,0,19" RenderTransformOrigin="0.5,0.5" AutoGenerateColumns="False" ColumnWidth="*" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" 
+                    		HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" 
+                    		TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False"
+                    		DataGridCell.Selected="DataGrid_GotFocus" CanUserSortColumns="False" CellStyle="{StaticResource Edit_Single_Click}" FontSize="14.667" Grid.ColumnSpan="3" Grid.Row="1">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding bandingName, IsAsync=True}" Header="bandingName" Visibility="Hidden"/>
+                                <DataGridTextColumn Binding="{Binding bandingValueStart, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Start Value"/>
+                                <DataGridTextColumn Binding="{Binding bandingValueEnd, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="End Value"/>
+                                <DataGridTextColumn Binding="{Binding amount, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Amount"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Grid x:Name="EditPremiumBar" Height="22" VerticalAlignment="Bottom" Margin="3,0,0,-1" Grid.ColumnSpan="3" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="416*"/>
+                                <ColumnDefinition Width="89*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                                    <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                                </LinearGradientBrush>
+                            </Grid.Background>
+                            <Rectangle Height="22" Stroke="#FF707070" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                            <Button x:Name="AddPremium" HorizontalAlignment="Left" Height="22" Width="34" VerticalAlignment="Top"  RenderTransformOrigin="0.5,0.5" Focusable="False" Background="{x:Null}" Click="AddPremium_Click">
+                                <Image Source="Resources/Plus.png" Stretch="Uniform" DockPanel.Dock="Top" Width="14" Height="12" RenderTransformOrigin="0.929,0.5"/>
+                            </Button>
+                            <Button x:Name="DeletePremium" HorizontalAlignment="Left" Height="22" Width="34" VerticalAlignment="Top"  RenderTransformOrigin="0.5,0.5" Focusable="False" Margin="33,0,0,0" Background="{x:Null}" Click="DeletePremium_Click">
+                                <Image Source="Resources/Minus.png" Stretch="Uniform" DockPanel.Dock="Top" Width="14" Height="12" RenderTransformOrigin="0.929,0.5"/>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <Button x:Name="savePlan" Content="Save" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,100,15" VerticalAlignment="Bottom" Width="75" Click="SavePlan_Click" Height="25" FontSize="14.667"/>
+                    <Button x:Name="cancelPlan" Content="Cancel" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,14,15" VerticalAlignment="Bottom" Width="75" Click="CancelPlan_Click" Height="25" FontSize="14.667"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem x:Name="Employertb" Header="Employer" FontSize="14.667">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200*" MaxWidth="500"/>
+                        <ColumnDefinition Width="270*" MaxWidth="920"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.Background>
+                        <ImageBrush/>
+                    </Grid.Background>
+                    <TabControl x:Name="employerTabControl" Grid.Column="1" Margin="10,11,20,40">
+                        <TabItem Header="General Information">
+                            <Grid>
+                                <Grid.Background>
+                                    <ImageBrush/>
+                                </Grid.Background>
+                                <Label x:Name="label19" Content="Employer Name:" HorizontalAlignment="Left" Margin="21,20,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label20" Content="EIN" HorizontalAlignment="Left" Margin="21,55,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label21" Content="Filing Year" HorizontalAlignment="Left" Margin="21,90,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label22" Content="Form Type" HorizontalAlignment="Left" Margin="21,440,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label23" Content="Address" HorizontalAlignment="Left" Margin="21,125,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label24" Content="Address 2" HorizontalAlignment="Left" Margin="21,160,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label25" Content="City" HorizontalAlignment="Left" Margin="21,195,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label26" Content="State" HorizontalAlignment="Left" Margin="21,230,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label27" Content="Zip Code" HorizontalAlignment="Left" Margin="21,265,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label28" Content="Country" HorizontalAlignment="Left" Margin="21,300,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label29" Content="Contact Name" HorizontalAlignment="Left" Margin="21,335,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label30" Content="Contact Phone" HorizontalAlignment="Left" Margin="21,370,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label31" Content="Title" HorizontalAlignment="Left" Margin="21,405,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <TextBox x:Name="employerName" Height="25" Margin="158,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="278" Background="White" MaxLength="70" FontSize="14.667"/>
+                                <xctk:MaskedTextBox x:Name="ein" Height="25" Margin="158,60,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" MaxLength="10" Mask="00-0000000" FontSize="14.667"/>
+                                <ComboBox x:Name="filingYear" Margin="158,95,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" ItemsSource="{Binding}" FontSize="14.667" Height="25"/>
+                                <TextBox x:Name="address" Height="25" Margin="158,130,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="278" MaxLength="150" FontSize="14.667"/>
+                                <TextBox x:Name="address2" Height="25" Margin="158,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="278" MaxLength="150" FontSize="14.667"/>
+                                <TextBox x:Name="city" Height="25" Margin="158,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="278" MaxLength="100" FontSize="14.667"/>
+                                <ComboBox x:Name="state" Margin="158,235,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="201" ItemsSource="{Binding}" FontSize="14.667" Height="25"/>
+                                <TextBox x:Name="zipCode" Height="25" Margin="158,270,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" MaxLength="50" FontSize="14.667"/>
+                                <ComboBox x:Name="country" Margin="158,305,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="201" ItemsSource="{Binding}" FontSize="14.667" Height="25"/>
+                                <TextBox x:Name="contactName" Height="25" Margin="158,340,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="278" MaxLength="100" FontSize="14.667"/>
+                                <xctk:MaskedTextBox x:Name="contactPhone" Height="25" Margin="158,375,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="278" Mask="(000) 000-0000" MaxLength="50" FontSize="14.667"/>
+                                <TextBox x:Name="title" Height="25" Margin="158,410,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="278" MaxLength="100" FontSize="14.667"/>
+                                <ComboBox x:Name="formType" Margin="158,445,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" ItemsSource="{Binding}" FontSize="14.667" Height="25"/>
+                                <ComboBox x:Name="originCode" Margin="158,480,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" ItemsSource="{Binding}" FontSize="14.667" Height="25"/>
+                                <Label x:Name="label45" Content="Origin Code" HorizontalAlignment="Left" Margin="21,475,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <Label x:Name="label46" Content="SHOP Identifier" HorizontalAlignment="Left" Margin="21,510,0,0" VerticalAlignment="Top" FontSize="14.667"/>
+                                <TextBox x:Name="shopIdentifier" HorizontalAlignment="Left" Height="25" Margin="158,515,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" MaxLength="50" FontSize="14.667"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="1094-C Details">
+                            <Grid>
+                                <Grid.Background>
+                                    <ImageBrush/>
+                                </Grid.Background>
+                                <CheckBox x:Name="OfferMethod" Content="A. Qualifiying Offer Method" HorizontalAlignment="Left" Margin="48,42,0,0" VerticalAlignment="Top"/>
+                                <CheckBox x:Name="OfferMethodRelief" Content="B. Qualifying Offer Method Transition Relief" HorizontalAlignment="Left" Margin="48,68,0,0" VerticalAlignment="Top"/>
+                                <CheckBox x:Name="Section4980H" Content="C. Section 4980H Transition Relief" HorizontalAlignment="Left" Margin="48,93,0,0" VerticalAlignment="Top"/>
+                                <CheckBox x:Name="OfferMethod98" Content="D. 98% Offer Method" HorizontalAlignment="Left" Margin="48,118,0,0" VerticalAlignment="Top"/>
+                                <Label x:Name="label47" Content="Certification of Eligibility" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Width="241"/>
+                                <DataGrid x:Name="ALEMemberInformation" Margin="10,209,10,0" AutoGenerateColumns="False" ColumnWidth="*" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" 
+                                          HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" 
+                                          TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False"
+                                          DataGridCell.Selected="DataGrid_GotFocus" CanUserSortColumns="False" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" MaxHeight="317" Height="317" VerticalAlignment="Top">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding month, IsAsync=True}" Header="Month" IsReadOnly="True"/>
+                                        <DataGridCheckBoxColumn Binding="{Binding minimum, IsAsync=True}" Header="Minimum Coverage"/>
+                                        <DataGridTextColumn Binding="{Binding full, IsAsync=True, TargetNullValue=''}" Header="Full-Time"/>
+                                        <DataGridTextColumn Binding="{Binding total, IsAsync=True, TargetNullValue=''}" Header="Total"/>
+                                        <DataGridCheckBoxColumn Binding="{Binding aggregate, IsAsync=True}" Header="Aggregate"/>
+                                        <DataGridTextColumn Binding="{Binding section, IsAsync=True, TargetNullValue=''}" Header="Sec4980H"/>
+                                        <DataGridTemplateColumn Width="30">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Click="ApplyUp_Click">
+                                                        <Image Source="Resources/apply-up.png" Width="25" Height="15"/>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Width="30">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Click="ApplyDown_Click">
+                                                        <Image Source="Resources/apply-down.png" Width="25" Height="15"/>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <Label x:Name="label47_Copy" Content="ALE Information" HorizontalAlignment="Left" Margin="10,179,0,0" VerticalAlignment="Top" Width="241"/>
+                                <CheckBox x:Name="Disable" Content="Disable Automatic Changes" Margin="0,184,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="209"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                    <DataGrid x:Name="employerDataGrid" Margin="10,12,11,31" AutoGenerateColumns="False" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" HorizontalGridLinesBrush="White" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Black" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" GridLinesVisibility="None" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="True" Padding="0" IsReadOnly="True" Background="White">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding id}"  Header="Id" Visibility="Hidden" />
+                            <DataGridTextColumn Binding="{Binding name}"   Width ="*" Header="Employer"/>
+                            <DataGridTextColumn Binding="{Binding EmployerTaxID}" Header="EIN"/>
+                            <DataGridCheckBoxColumn Binding="{Binding isCompany}" Header="Main"/>
+                        </DataGrid.Columns>
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseUp" Handler="employerDataGrid_Row_Selected"/>
+                                <EventSetter Event="KeyUp" Handler="employerDataGrid_Row_Selected"/>
+                            </Style>
+                        </DataGrid.Resources>
+                    </DataGrid>
+                    <Button x:Name="saveEmployer" Content="Save" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,115,10" VerticalAlignment="Bottom" Width="75" Click="saveEmployer_Click" Height="25"/>
+                    <Button x:Name="cancelEmployer" Content="Cancel" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,20,10" VerticalAlignment="Bottom" Width="75" Click="cancelEmployer_Click" Height="25"/>
+                    <Grid x:Name="EmployerEditBar" Height="22" VerticalAlignment="Bottom" Margin="10,0,11,10">
+                        <Grid.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                                <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                                <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                            </LinearGradientBrush>
+                        </Grid.Background>
+                        <Rectangle Height="22" Stroke="#FF707070" VerticalAlignment="Top"/>
+                        <Button x:Name="addEmployer" HorizontalAlignment="Left" Height="22" Width="34" VerticalAlignment="Bottom"  RenderTransformOrigin="0.5,0.5" Focusable="False" Background="{x:Null}" Click="addEmployer_Click">
+                            <Image Source="Resources/Plus.png" Stretch="Uniform" DockPanel.Dock="Top" Width="14" Height="12" RenderTransformOrigin="0.929,0.5"/>
+                        </Button>
+                        <Button x:Name="deleteEmployer" HorizontalAlignment="Left" Height="22" Width="34" VerticalAlignment="Top"  RenderTransformOrigin="0.5,0.5" Focusable="False" Margin="33,0,0,0" Background="{x:Null}" Click="deleteEmployer_Click">
+                            <Image Source="Resources/Minus.png" Stretch="Uniform" DockPanel.Dock="Top" Width="14" Height="12" RenderTransformOrigin="0.929,0.5"/>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Employeetb" Header="Employee" FontSize="14.667" Margin="-2,-2,2,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200*" MaxWidth="500"/>
+                        <ColumnDefinition Width="270*" MaxWidth="920"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.Background>
+                        <ImageBrush/>
+                    </Grid.Background>
+                    <DataGrid x:Name="employeeDataGrid" Margin="10,12,11,31" AutoGenerateColumns="False" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" 
+                              IsSynchronizedWithCurrentItem="True" HorizontalGridLinesBrush="White" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Black"
+                              UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True"
+                              GridLinesVisibility="None" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="True" Padding="0" IsReadOnly="True" 
+                              Background="White" ItemsSource="{Binding employeesView}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding id}" Header="Id" Visibility="Hidden" />
+                            <DataGridTextColumn Binding="{Binding firstName}" Width ="*" Header="First Name"/>
+                            <DataGridTextColumn Binding="{Binding lastName}" Width ="*" Header="Last Name"/>
+                            <DataGridTextColumn Binding="{Binding ssn}" Header="SSN"/>
+                        </DataGrid.Columns>
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseUp" Handler="employeeDataGrid_Row_Selected"/>
+                                <EventSetter Event="KeyUp" Handler="employeeDataGrid_Row_Selected"/>
+                            </Style>
+                        </DataGrid.Resources>
+                    </DataGrid>
+                    <Grid x:Name="eeDataContainer" Margin="10,12,10,44" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200*"/>
+                            <ColumnDefinition Width="104*"/>
+                            <ColumnDefinition Width="35*"/>
+                            <ColumnDefinition Width="155*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="412"/>
+                            <RowDefinition Height="10*" MaxHeight="98"/>
+                            <RowDefinition Height="13*"/>
+                        </Grid.RowDefinitions>
+                        <GroupBox x:Name="employeeInformation" Header="Employee Information" Margin="0,0,0,264" Grid.ColumnSpan="4"/>
+                        <Label x:Name="employerNamelbl" Content="Employer Name" HorizontalAlignment="Left" Margin="10,32,0,0" VerticalAlignment="Top"/>
+                        <Label x:Name="firstNamelbl" Content="First Name" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top"/>
+                        <Label x:Name="middleNamelbl" Content="Middle Name" HorizontalAlignment="Left" Margin="3,67,0,0" VerticalAlignment="Top" Grid.Column="1" Width="98"/>
+                        <Label x:Name="lastNamelbl" Content="Last Name" Margin="0,67,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="82" Grid.Column="3"/>
+                        <Label x:Name="socialSecurityNumberlbl" Content="Social Security Number" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
+                        <Label x:Name="dateOfBirthlbl" Content="Date of Birth" Margin="0,100,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="96"/>
+                        <ComboBox x:Name="eeEmployerName" Margin="130,36,10,0" VerticalAlignment="Top" Grid.ColumnSpan="4"/>
+                        <TextBox x:Name="eeFirstName" Height="23" Margin="95,72,2,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                        <TextBox x:Name="eeMiddleName" Height="23" Margin="101,72,5,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="2"/>
+                        <TextBox x:Name="eeLastName" Height="23" Margin="87,72,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="3"/>
+                        <TextBox x:Name="eeSocialSecurityNumber" Height="23" Margin="175,102,8,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                        <TextBox x:Name="eeDateOfBirth" Height="23" Margin="66,102,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="3"/>
+                        <TabControl x:Name="employeeDetails" Height="259" Margin="0,153,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4">
+                            <TabControl.Background>
+                                <ImageBrush/>
+                            </TabControl.Background>
+                            <TabItem Header="Information">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="262*"/>
+                                        <ColumnDefinition Width="231*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.Background>
+                                        <ImageBrush/>
+                                    </Grid.Background>
+                                    <Label x:Name="emailAddresslbl" Content="Email Address" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                    <Label x:Name="addresslbl" Content="Address" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+                                    <Label x:Name="address2lbl" Content="Address 2" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+                                    <Label x:Name="citylbl" Content="City" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
+                                    <Label x:Name="statelbl" Content="State" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
+                                    <Label x:Name="zipCodelbl" Content="Zip Code" Margin="5,134,0,0" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left" Width="72"/>
+                                    <Label x:Name="countrylbl" Content="Country" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top"/>
+                                    <TextBox x:Name="eeEmailAddress" Height="23" Margin="116,12,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                    <TextBox x:Name="eeAddress" Height="23" Margin="116,43,10,0" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                    <TextBox x:Name="eeAddress2" Height="23" Margin="116,74,10,0" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                    <TextBox x:Name="eeCity" Height="23" Margin="116,105,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+                                    <ComboBox x:Name="eeState" Margin="116,135,0,0" VerticalAlignment="Top" ItemsSource="{Binding}"/>
+                                    <TextBox x:Name="eeZipCode" Height="23" Margin="82,136,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="1"/>
+                                    <ComboBox x:Name="eeCountry" Margin="116,169,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" ItemsSource="{Binding}"/>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Hire Information">
+                                <Grid>
+                                    <Grid.Background>
+                                        <ImageBrush/>
+                                    </Grid.Background>
+                                    <DataGrid x:Name="eeHireInformation" Margin="10,49,10,10" AutoGenerateColumns="False" ColumnWidth="*" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" 
+                    		            HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" 
+                    		            TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False"
+                    		            CanUserSortColumns="False" ItemsSource="{Binding hireDataView}" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" FontSize="14.667">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Binding="{Binding hireName, IsAsync=True}" Header="bandingName" Visibility="Hidden"/>
+                                            <DataGridTextColumn Binding="{Binding startDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Hire Date"/>
+                                            <DataGridTextColumn Binding="{Binding endDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Termination Date"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Status">
+                                <Grid>
+                                    <DataGrid x:Name="eeStatusInformation" Margin="10,57,10,10" RenderTransformOrigin="0.5,0.5" AutoGenerateColumns="False" ColumnWidth="*" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" 
+                    		            HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" 
+                    		            TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False"
+                    		            CanUserSortColumns="False" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" FontSize="14.667" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Binding="{Binding statusName, IsAsync=True}" Header="bandingName" Visibility="Hidden"/>
+                                            <DataGridTextColumn Binding="{Binding status, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Status"/>
+                                            <DataGridTextColumn Binding="{Binding startDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Status Start Date"/>
+                                            <DataGridTextColumn Binding="{Binding endDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Status End Date"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Coverage">
+                                <Grid>
+                                    <DataGrid x:Name="eeEnrollmentInformation" Margin="10,64,10,10" AutoGenerateColumns="False" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" 
+                    		            HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Visible" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" 
+                    		            TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False"
+                    		            CanUserSortColumns="False" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" FontSize="14.667" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Binding="{Binding enrollmentName, IsAsync=True}" Header="bandingName" Visibility="Hidden"/>
+                                            <DataGridCheckBoxColumn Binding="{Binding unionMember, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Union Member"/>
+                                            <DataGridTextColumn Binding="{Binding contributionStartDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Contribution Start"/>
+                                            <DataGridTextColumn Binding="{Binding contributionEndDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Contribution End"/>
+                                            <DataGridTextColumn Binding="{Binding coverageOfferDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Offer Date"/>
+                                            <DataGridTextColumn Binding="{Binding name, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Plan"/>
+                                            <DataGridCheckBoxColumn Binding="{Binding isEnrolled, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Enrolled"/>
+                                            <DataGridTextColumn Binding="{Binding CoverageStartDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="Start Date"/>
+                                            <DataGridTextColumn Binding="{Binding coverageEndDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="End Date"/>
+                                            <DataGridCheckBoxColumn Binding="{Binding COBRAEnrolled, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="COBRA"/>
+                                            <DataGridTextColumn Binding="{Binding COBRAStartDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="COBRA Start"/>
+                                            <DataGridTextColumn Binding="{Binding COBRAEndDate, IsAsync=True, UpdateSourceTrigger=LostFocus}" Header="COBRA End"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                        <DataGrid x:Name="eeCodes" Margin="0,5,0,0" AutoGenerateColumns="False" ColumnWidth="*" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" 
+                    		            HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" 
+                    		            TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False"
+                    		            DataGridCell.Selected="DataGrid_GotFocus" CanUserSortColumns="False" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" FontSize="14.667" Grid.ColumnSpan="4" Grid.Row="1" IsReadOnly="True" SelectionUnit="Cell">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding name}" Header="Code Type" Width="Auto"/>
+                                <DataGridTextColumn Binding="{Binding January}" Header="Jan"/>
+                                <DataGridTextColumn Binding="{Binding February}" Header="Feb"/>
+                                <DataGridTextColumn Binding="{Binding March}" Header="Mar"/>
+                                <DataGridTextColumn Binding="{Binding April}" Header="Apr"/>
+                                <DataGridTextColumn Binding="{Binding May}" Header="May"/>
+                                <DataGridTextColumn Binding="{Binding June}" Header="Jun"/>
+                                <DataGridTextColumn Binding="{Binding July}" Header="Jul"/>
+                                <DataGridTextColumn Binding="{Binding August}" Header="Aug"/>
+                                <DataGridTextColumn Binding="{Binding September}" Header="Sep"/>
+                                <DataGridTextColumn Binding="{Binding October}" Header="Oct"/>
+                                <DataGridTextColumn Binding="{Binding November}" Header="Nov"/>
+                                <DataGridTextColumn Binding="{Binding December}" Header="Dec"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <DataGrid x:Name="eeCoveredIndividuals" Margin="0,8,0,10" Grid.Row="2" AutoGenerateColumns="False" ColumnWidth="*" BorderBrush="#FF688CAF" BorderThickness="1,1,1,1" IsSynchronizedWithCurrentItem="True" 
+                    		            HorizontalGridLinesBrush="Gray" HorizontalScrollBarVisibility="Hidden" VerticalGridLinesBrush="Gray" UseLayoutRounding="False" TextOptions.TextFormattingMode="Display" 
+                    		            TextOptions.TextHintingMode="Animated" IsTextSearchEnabled="True" HeadersVisibility="Column" SelectionMode="Single" Background="White" CanUserAddRows="False"
+                    		            DataGridCell.Selected="DataGrid_GotFocus" CanUserSortColumns="False" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" FontSize="14.667" Grid.ColumnSpan="4" IsReadOnly="True" SelectionUnit="Cell">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding firstName}" Header="First Name" Width="Auto"/>
+                                <DataGridTextColumn Binding="{Binding lastName}" Header="Last Name" Width="Auto"/>
+                                <DataGridTextColumn Binding="{Binding ssn}" Header="SSN" Width="Auto"/>
+                                <DataGridTextColumn Binding="{Binding birthday}" Header="DOB" Width="Auto"/>
+                                <DataGridCheckBoxColumn Binding="{Binding janCoverage}" Header="Jan"/>
+                                <DataGridCheckBoxColumn Binding="{Binding febCoverage}" Header="Feb"/>
+                                <DataGridCheckBoxColumn Binding="{Binding marCoverage}" Header="Mar"/>
+                                <DataGridCheckBoxColumn Binding="{Binding aprCoverage}" Header="Apr"/>
+                                <DataGridCheckBoxColumn Binding="{Binding mayCoverage}" Header="May"/>
+                                <DataGridCheckBoxColumn Binding="{Binding junCoverage}" Header="Jun"/>
+                                <DataGridCheckBoxColumn Binding="{Binding julCoverage}" Header="Jul"/>
+                                <DataGridCheckBoxColumn Binding="{Binding augCoverage}" Header="Aug"/>
+                                <DataGridCheckBoxColumn Binding="{Binding sepCoverage}" Header="Sep"/>
+                                <DataGridCheckBoxColumn Binding="{Binding octCoverage}" Header="Oct"/>
+                                <DataGridCheckBoxColumn Binding="{Binding novCoverage}" Header="Nov"/>
+                                <DataGridCheckBoxColumn Binding="{Binding decCoverage}" Header="Dec"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                    <Button x:Name="eeSaveChanges" Content="Save Changes" Margin="0,0,124,14" HorizontalAlignment="Right" Width="106" Grid.Column="1" Height="25" VerticalAlignment="Bottom"/>
+                    <Button x:Name="eeCancel" Content="Cancel" Margin="0,0,22,14" HorizontalAlignment="Right" Width="86" Grid.Column="1" Height="25" VerticalAlignment="Bottom"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Reportstb" Header="Reports" FontSize="14.667">
+                <Grid Margin="0,-4,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="303*"/>
+                        <ColumnDefinition Width="595*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.Background>
+                        <ImageBrush/>
+                    </Grid.Background>
+                    <DataGrid x:Name="dataGrid1" Margin="4,8,10,7">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Visibility="Hidden"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Employer" Width="4*"></DataGridTextColumn>
+                            <DataGridTextColumn Header="EIN" Width="1*"></DataGridTextColumn>
+                            <DataGridCheckBoxColumn Header="Print" Width="1*"></DataGridCheckBoxColumn>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <TabControl x:Name="tabControl1" HorizontalAlignment="Left" Height="635" Margin="300,8,0,0" VerticalAlignment="Top" Width="581" Grid.ColumnSpan="2">
+                        <TabItem Header="Print">
+                            <Grid Background="White">
+                                <Grid HorizontalAlignment="Left" Height="599" Margin="0,1,0,0" VerticalAlignment="Top" Width="573">
+                                    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="43,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="416"/>
+                                    <Button x:Name="button" Content="Browse" HorizontalAlignment="Left" Margin="466,49,0,0" VerticalAlignment="Top" Width="75"/>
+                                    <GroupBox x:Name="groupBox6" Header="Output Options" Margin="43,91,30,405">
+                                        <Grid Margin="10,4,12,1">
+                                            <RadioButton x:Name="radioButton" Content="Gerneate the Rerpot as multiple PDF files." HorizontalAlignment="Left" Margin="26,11,0,0" VerticalAlignment="Top"/>
+                                            <RadioButton x:Name="radioButton1" Content="Genreate the Report as one PDF file." HorizontalAlignment="Left" Margin="26,34,0,0" VerticalAlignment="Top"/>
+                                        </Grid>
+                                    </GroupBox>
+                                    <Button x:Name="button1" Content="Generate" HorizontalAlignment="Left" Margin="466,255,0,0" VerticalAlignment="Top" Width="75"/>
+                                    <ProgressBar Height="24" Margin="46,216,31,0" VerticalAlignment="Top"/>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Settings" Height="26" VerticalAlignment="Bottom">
+                            <Grid Background="White">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="156*"/>
+                                    <RowDefinition Height="266*"/>
+                                    <RowDefinition Height="179*"/>
+                                </Grid.RowDefinitions>
+                                <GroupBox x:Name="groupBox4" Header="Page Options" Margin="6,17,15,7">
+                                    <Grid Margin="41,11,18,5">
+                                        <CheckBox x:Name="checkBox" Content="Include Instruction Pages" HorizontalAlignment="Left" Margin="15,16,0,0" VerticalAlignment="Top"/>
+                                        <CheckBox x:Name="checkBox1" Content="Include a blank page between forms" HorizontalAlignment="Left" Margin="15,38,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                                        <CheckBox x:Name="checkBox2" Content="Include address page" HorizontalAlignment="Left" Margin="15,60,0,0" VerticalAlignment="Top"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox x:Name="groupBox5" IsEnabled="False" Header="Mailing Settings&#xD;&#xA;" Margin="9,2,15,4" Grid.Row="1">
+                                    <Grid HorizontalAlignment="Left" Height="159" Margin="65,16,0,0" VerticalAlignment="Top" Width="393">
+                                        <Label x:Name="label4" Content="Mailing settings here&#xD;&#xA;" HorizontalAlignment="Left" Margin="113,65,0,0" VerticalAlignment="Top"/>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Settingstb" Header="Settings" FontSize="14.667">
+                <Grid>
+                    <Grid.Background>
+                        <ImageBrush/>
+                    </Grid.Background>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="Logintb" Header="Login" FontSize="14.667">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="59*"/>
+                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="145*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="185*"/>
+                        <ColumnDefinition Width="496"/>
+                        <ColumnDefinition Width="186*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid HorizontalAlignment="Center" Height="210" Margin="1,5,1,284" VerticalAlignment="Center" Width="494" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
+                        <GroupBox x:Name="groupBox2" Header="Login" HorizontalAlignment="Left" Margin="6,8,0,0" VerticalAlignment="Top" Height="194" Width="481"/>
+                        <Button x:Name="login" Content="Login" HorizontalAlignment="Left" Margin="390,157,0,0" VerticalAlignment="Top" Width="75" Click="login_Click"/>
+                        <Label x:Name="label17" Content="Username" HorizontalAlignment="Left" Margin="41,53,0,0" VerticalAlignment="Top"/>
+                        <Label x:Name="label18" Content="Password" HorizontalAlignment="Left" Margin="41,97,0,0" VerticalAlignment="Top"/>
+                        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="25" Margin="166,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="269"/>
+                        <TextBox x:Name="textBox3" HorizontalAlignment="Left" Height="25" Margin="166,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="269"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+        <Rectangle Fill="#FF363636" Height="66" Stroke="Black" VerticalAlignment="Top" StrokeThickness="0"/>
+
+        <ContentControl x:Name="HomeButton" Style="{StaticResource contentControlDisable}" Margin="0,7,25,0" HorizontalAlignment="Right" Width="41" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="HomeButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/home.png" Width="35" Height="35"/>
+                        <TextBlock Name="tb" Text="Home" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl Name="uploadButton" Style="{StaticResource contentControlDisable}" Margin="10,7,0,0" HorizontalAlignment="Left" Width="41" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="uploadButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/up.png" Width="35" Height="35"/>
+                        <TextBlock x:Name="tb" Text="Upload" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl x:Name="selectCompanyButton" Style="{StaticResource contentControlDisable}" Margin="73,7,0,0" HorizontalAlignment="Left" Width="41" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="selectCompanyButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/fileopen.png" Width="35" Height="35"/>
+                        <TextBlock x:Name="tb" Text="Select" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border x:Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl x:Name="editPlanButton" Style="{StaticResource contentControlDisable}" Margin="133,7,0,0" HorizontalAlignment="Left" Width="52" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="editPlanButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/plan.png" Width="35" Height="35"/>
+                        <TextBlock x:Name="tb" Text="Edit Plan" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border x:Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl x:Name="editEmployerButton" Style="{StaticResource contentControlDisable}" Margin="202,7,0,0" HorizontalAlignment="Left" Width="79" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="editEmployerButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/Employer.png" Width="35" Height="35"/>
+                        <TextBlock x:Name="tb" Text="Edit Employer" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border x:Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl x:Name="editEmployeeButton" Style="{StaticResource contentControlDisable}" Margin="296,7,0,0" HorizontalAlignment="Left" Width="79" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="editEmployeeButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/Employee.png" Width="35" Height="35"/>
+                        <TextBlock x:Name="tb" Text="Edit Employee" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border x:Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl x:Name="printReportButton" Style="{StaticResource contentControlDisable}" Margin="390,7,0,0" HorizontalAlignment="Left" Width="79" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="printReportButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/Report.png" Width="35" Height="35"/>
+                        <TextBlock x:Name="tb" Text="Print Reports" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border x:Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl x:Name="settingsButton" Style="{StaticResource contentControlDisable}" Margin="481,7,0,0" HorizontalAlignment="Left" Width="58" Height="68" VerticalAlignment="Top" MouseLeftButtonUp="settingsButton_MouseLeftButtonUp">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <StackPanel x:Name="sp">
+                        <Image Source="Resources/configure.png" Width="35" Height="35"/>
+                        <TextBlock x:Name="tb" Text="Settings" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Height="22"/>
+                        <Border x:Name="PressedBorder" BorderBrush="Transparent" BorderThickness="0,0,0,5" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="sp" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tb" Property="FontWeight" Value="Bold" />
+                            <Setter TargetName="sp" Property="Focusable" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+    </Grid>
+</Window>

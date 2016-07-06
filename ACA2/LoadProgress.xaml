@@ -1,0 +1,15 @@
+﻿<Window x:Class="ACA2.LoadProgress"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ACA2"
+        mc:Ignorable="d"
+        Title="LoadProgress" Height="151.525" Width="419.085" ResizeMode="NoResize" WindowStartupLocation="Manual" FontSize="14.667">
+    <Grid>
+        <ProgressBar x:Name="loadProgress" Margin="10,0,10,46" Height="32" VerticalAlignment="Bottom" ValueChanged="loadProgress_ValueChanged"/>
+        <Button x:Name="button" Content="Cancel" Margin="0,0,10,10" HorizontalAlignment="Right" Width="81" Height="25" VerticalAlignment="Bottom"/>
+        <Label x:Name="label" Content="Loading Employer..." HorizontalAlignment="Left" Margin="10,0,0,84" Height="30" VerticalAlignment="Bottom"/>
+        <Label x:Name="progresslbl" Margin="0,47,0,46" HorizontalAlignment="Center" Width="10"/>
+    </Grid>
+</Window>
